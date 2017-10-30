@@ -9,7 +9,7 @@
 		<meta name="keywords" content="web">
 		<meta name="author" content="Jan Jaworski">
 
-		<title><?php echo $title ?></title>
+		<title>Northampton News - <?php echo $title ?></title>
 
 		<!-- CSS -->
 		<link rel="stylesheet" href="css/styles.min.css">
@@ -23,11 +23,12 @@
 				<h1>Northampton News</h1>
 			</section>
 		</header>
+
 		<nav>
 			<ul>
-				<li><a href="index.html">Home</a></li>
-				<li><a href="#">Latest Articles</a></li>
-				<li><a href="#">Select Category</a>
+				<li><a href="index.php">Home</a></li>
+				<li><a href="articles.php">Latest Articles</a></li>
+				<li><a href="categories.php">Select Category</a>
 					<ul>
 						<li><a href="#">Category 1</a></li>
 						<li><a href="#">Category 2</a></li>
@@ -37,9 +38,11 @@
 				<li><a href="contact.php">Contact us</a></li>
 			</ul>
 		</nav>
-		<img src="img/banners/randombanner.php" />
+
+		<img src="img/banners/randombanner.php">
+
 		<main>
-			<!-- Delete the <nav> element if the sidebar is not required -->
+
 			<nav>
 				<ul>
 					<li><a href="#">Sidebar</a></li>
@@ -78,7 +81,6 @@
 		<footer>
 			&copy; Northampton News 2017
 		</footer>
-
 	</body>
 
 </html>
