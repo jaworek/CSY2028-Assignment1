@@ -1,14 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en" dir="ltr">
+
 	<head>
 		<meta charset="utf-8">
-	  <meta name="viewport" content="width=device-width, initial-scale=1">
-	  <meta name="author" content="Jan Jaworski">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="Group project">
+		<meta name="keywords" content="web">
+		<meta name="author" content="Jan Jaworski">
 
-		<title>Northampton News - Home</title>
+		<title><?php echo $title ?></title>
 
-		<link rel="stylesheet" href="styles.min.css"/>
+		<!-- CSS -->
+		<link rel="stylesheet" href="css/styles.min.css">
+
+		<!-- Script -->
 	</head>
+
 	<body>
 		<header>
 			<section>
@@ -55,9 +63,12 @@
 				<form>
 					<p>Forms are styled like so:</p>
 
-					<label>Field 1</label> <input type="text" />
-					<label>Field 2</label> <input type="text" />
-					<label>Textarea</label> <textarea></textarea>
+					<label>Field 1</label>
+          <input type="text">
+					<label>Field 2</label>
+          <input type="text">
+					<label>Textarea</label>
+          <textarea></textarea>
 
 					<input type="submit" name="submit" value="Submit" />
 				</form>
@@ -69,4 +80,5 @@
 		</footer>
 
 	</body>
+
 </html>
