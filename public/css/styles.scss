@@ -1,38 +1,12 @@
 /* Import website font */
 @import url('https://stockfont.org/?69772035349a8e4ece6e05f415d0c8ca31fff37ef65a22d6e1d3704659936440');
 
-*
+*,
+*::before,
+*::after
 {
     margin: 0;
     padding: 0;
-}
-
-nav ul ul
-{
-    position: absolute;
-
-    display: block;
-    overflow: hidden;
-
-    width: 200px;
-    max-height: 0;
-    margin-left: 20px;
-
-    -webkit-transition: max-height .5s;
-            transition: max-height 1s;
-
-    background-color: #333;
-}
-
-nav li:hover ul
-{
-    max-height: 500px;
-}
-nav ul ul li
-{
-    float: none;
-
-    width: auto;
 }
 
 html
@@ -43,14 +17,31 @@ html
 body
 {
     background-color: #fff;
+
+     > img
+    {
+        display: block;
+
+        width: 100%;
+    }
 }
+
 header
 {
     height: 200px; color: white;
     background-color: #778baf;
+
+    section
+    {
+        display: block;
+    }
+
+    h1
+    {
+        font-weight: bold;
+        font-style: italic;
+    }
 }
-
-
 
 nav
 {
@@ -59,45 +50,113 @@ nav
     width: 100%;
 
     background-color: #333;
-}
-nav ul
-{
-    display: block;
 
-    width: 1000px;
+    ul
+    {
+        display: block;
+
+        width: 1000px;
+        margin: auto;
+
+        list-style-type: none;
+
+        ul
+        {
+            position: absolute;
+
+            display: block;
+            overflow: hidden;
+
+            width: 200px;
+            max-height: 0;
+            margin-left: 20px;
+
+            -webkit-transition: max-height .5s;
+                    transition: max-height 1s;
+
+            background-color: #333;
+
+            li
+            {
+                float: none;
+
+                width: auto;
+            }
+        }
+
+        li
+        {
+            float: left;
+            overflow: auto;
+
+            width: 25%;
+
+            text-align: center;
+        }
+    }
+
+    li:hover ul
+    {
+        max-height: 500px;
+    }
+
+    a
+    {
+        display: block;
+
+        padding-top: 10px;
+
+        text-decoration: none;
+
+        color: white;
+    }
+}
+
+main
+{
+    display: table;
+
+    width: 70vw;
+    min-height: 50vh;
     margin: auto;
 
-    list-style-type: none;
-}
-nav ul li
-{
-    float: left;
-    overflow: auto;
+    color: #444;
+    background-color: #ddd;
+    box-shadow: 0 0 10px #888;
 
-    width: 25%;
+    h2
+    {
+        font-size: 2em;
+    }
 
-    text-align: center;
-}
-nav a
-{
-    display: block;
+     > article
+    {
+        display: table-cell;
 
-    padding-top: 10px;
+        padding: 2em;
+    }
 
-    text-decoration: none;
+     > nav
+    {
+        display: table-cell;
 
-    color: white;
-}
+        width: 20%;
+        padding: 2em;
 
-header section
-{
-    display: block;
-}
+        li
+        {
+            float: none;
 
-header h1
-{
-    font-weight: bold;
-    font-style: italic;
+            width: auto;
+
+            text-align: left;
+        }
+
+        ul
+        {
+            width: auto;
+        }
+    }
 }
 
 
@@ -113,23 +172,6 @@ h1
     text-shadow: 2px 2px 2px #000;
 }
 
-main
-{
-    display: block;
-
-    width: 70vw;
-    min-height: 50vh;
-    margin: auto;
-
-    color: #444;
-    background-color: #ddd;
-    box-shadow: 0 0 10px #888;
-}
-
-main h2
-{
-    font-size: 2em;
-}
 .home
 {
     width: 60vw;
@@ -142,22 +184,30 @@ h2
 {
     margin-bottom: 1em;
 }
+
 ol
 {
     margin-left: 30px;
 }
 
+ul
+{
+    margin-left: 2em;
+}
+
 pre
 {
     margin-top: 20px;
+
+    code
+    {
+        display: block;
+    }
 }
+
 code
 {
     background-color: #ccc;
-}
-pre code
-{
-    display: block;
 }
 
 footer
@@ -173,42 +223,53 @@ form
     padding-top: 2em;
 
     border-top: 1px solid #888;
+
+    select,
+    label,
+    input,
+    textarea
+    {
+        float: left;
+
+        width: 200px;
+        margin-top: 20px;
+        padding: 10px;
+    }
+
+    select
+    {
+        width: 220px;
+    }
+
+    label
+    {
+        clear: left;
+    }
+
+    input[type='text'],
+    input[type='password']
+    {
+        font-family: verdana, sans-serif;
+
+        color: #999;
+    }
 }
 
-form select,
-form label,
-form input,
-form textarea
-{
-    float: left;
-
-    width: 200px;
-    margin-top: 20px;
-    padding: 10px;
-}
-
-form label
-{
-    clear: left;
-}
-
-textarea
-{
-    height: 100px;
-}
-
-form input[type='text'],
-form input[type='password'],
 textarea
 {
     font-family: verdana, sans-serif;
+
+    height: 100px;
 
     color: #999;
 }
 
 input[type='submit']
 {
-    clear: both; width: 220px;margin-left: 220px;
+    clear: both;
+
+    width: 220px;
+    margin-left: 220px;
 }
 
 section a
@@ -216,14 +277,19 @@ section a
     color: #444;
 }
 
-form select
-{
-    width: 220px;
-}
-
 table
 {
-    width: 100%; margin-top: 20px;
+    width: 100%;
+    margin-top: 20px;
+
+    td input[type='submit']
+    {
+        float: right;
+
+        width: auto;
+        margin: 0;
+        padding: auto;
+    }
 }
 
 td
@@ -234,36 +300,36 @@ td
 .jobs
 {
     list-style-type: none;
-}
 
-.jobs strong
-{
-    float: left; clear: left;
+    strong
+    {
+        float: left; clear: left;
 
-    width: 150px;
-}
+        width: 150px;
+    }
 
-.jobs p
-{
-    float: left;
+    p
+    {
+        float: left;
 
-    width: 500px;
-}
+        width: 500px;
+    }
 
-.jobs li
-{
-    overflow: auto;
+    li
+    {
+        overflow: auto;
 
-    padding-top: 20px;
-    padding-bottom: 20px;
+        padding-top: 20px;
+        padding-bottom: 20px;
 
-    border-bottom: 2px solid #aaa;
-}
+        border-bottom: 2px solid #aaa;
+    }
 
-.jobs a
-{
-    float: right;
-    clear: both;
+    a
+    {
+        float: right;
+        clear: both;
+    }
 }
 
 img.shop
@@ -305,59 +371,4 @@ img.shop
     text-decoration: none;
 
     color: white;
-}
-
-table td input[type='submit']
-{
-    float: right;
-
-    width: auto;
-    margin: 0;
-    padding: auto;
-}
-
-ul
-{
-    margin-left: 2em;
-}
-
-body > img
-{
-    display: block;
-
-    width: 100%;
-}
-
-main
-{
-    display: table;
-}
-
-main > article
-{
-    display: table-cell;
-
-    padding: 2em;
-}
-
-main > nav
-{
-    display: table-cell;
-
-    width: 20%;
-    padding: 2em;
-}
-
-main > nav li
-{
-    float: none;
-
-    width: auto;
-
-    text-align: left;
-}
-
-main > nav ul
-{
-    width: auto;
 }
