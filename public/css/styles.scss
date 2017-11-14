@@ -92,7 +92,7 @@ nav
             float: left;
             overflow: auto;
 
-            width: 25%;
+            width: 15%;
 
             text-align: center;
         }
@@ -146,6 +146,11 @@ main
         width: 20%;
         padding: 2em;
 
+        ul
+        {
+            width: auto;
+        }
+
         li
         {
             float: none;
@@ -153,11 +158,6 @@ main
             width: auto;
 
             text-align: left;
-        }
-
-        ul
-        {
-            width: auto;
         }
     }
 }
