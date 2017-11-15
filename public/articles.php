@@ -1,4 +1,5 @@
 <?php
+session_start();
 $title = "Latest Articles";
-$content = "Edek";
+$content = file_get_contents('../html/articles.html');
 require '../layout.php';

@@ -1,3 +1,5 @@
+<?php require 'functions.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
@@ -19,31 +21,30 @@
 
 	<body>
 		<header>
-			<section>
 				<h1>Northampton News</h1>
-			</section>
 		</header>
 
-		<nav>
+		<nav class="nav">
 			<ul>
 				<li><a href="index.php">Home</a></li>
-				<li><a href="articles.php">Latest Articles</a></li>
-				<li><a href="categories.php">Select Category</a>
+				<li><a href="articles.php">Articles</a></li>
+				<li><a href="categories.php">Categories</a>
 					<ul>
 						<li><a href="#">Category 1</a></li>
 						<li><a href="#">Category 2</a></li>
 						<li><a href="#">Category 3</a></li>
 					</ul>
 				</li>
-				<li><a href="contact.php">Contact us</a></li>
-				<li><a href="login.php">Login</a></li>
-				<li><a href="register.php">Register</a></li>
+				<li><a href="contact.php">Contact</a></li>
+				<?php addLinks(); ?>
 			</ul>
 		</nav>
 
 		<img src="img/banners/randombanner.php">
 
-		<?php echo $content; ?>
+		<main>
+			<?php echo $content; ?>
+		</main>
 
 		<footer>
 			&copy; Northampton News 2017
