@@ -3,22 +3,21 @@
 
 $white: #fff;
 $headerBackground: #778baf;
+$navbar: #333;
 
 *,
 *::before,
 *::after
 {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-html
-{
-    font-family: 'Oxygen-Regular', times, verdana, sans-serif;
-}
-
 body
 {
+    font-family: 'Oxygen-Regular', times, verdana, sans-serif;
+
     background-color: $white;
 
      > img
@@ -31,76 +30,62 @@ body
 
 header
 {
-    height: 200px; color: $white;
     background-color: $headerBackground;
-
-    section
-    {
-        display: block;
-    }
 
     h1
     {
+        font-size: 4em;
         font-weight: bold;
         font-style: italic;
+
+        padding-top: 20px;
+        padding-bottom: 20px;
+
+        text-align: center;
+
+        color: $white;
+        text-shadow: 2px 2px 2px #000;
     }
 }
 
-nav
+.nav
 {
-    overflow: auto;
-
-    width: 100%;
-
-    background-color: #333;
+    background-color: $navbar;
 
     ul
     {
-        display: block;
-
-        width: 1000px;
-        margin: auto;
+        display: flex;
+        justify-content: center;
 
         list-style-type: none;
 
-        ul
-        {
-            position: absolute;
-
-            display: block;
-            overflow: hidden;
-
-            width: 200px;
-            max-height: 0;
-            margin-left: 20px;
-
-            -webkit-transition: max-height .5s;
-                    transition: max-height 1s;
-
-            background-color: #333;
-
-            li
-            {
-                float: none;
-
-                width: auto;
-            }
-        }
-
         li
         {
-            float: left;
-            overflow: auto;
-
-            width: 15%;
+            width: 150px;
 
             text-align: center;
-        }
-    }
 
-    li:hover ul
-    {
-        max-height: 500px;
+            ul
+            {
+                position: absolute;
+
+                display: block;
+                overflow: hidden;
+
+                max-height: 0;
+                margin: 0;
+
+                -webkit-transition: max-height 1s;
+                        transition: max-height 1s;
+
+                background-color: #333;
+            }
+
+            &:hover ul
+            {
+                max-height: 500px;
+            }
+        }
     }
 
     a
@@ -117,7 +102,8 @@ nav
 
 main
 {
-    display: table;
+    display: flex;
+    justify-content: center;
 
     width: 70vw;
     min-height: 50vh;
@@ -125,7 +111,8 @@ main
 
     color: #444;
     background-color: #ddd;
-    box-shadow: 0 0 10px #888;
+    -webkit-box-shadow: 0 0 10px #888;
+            box-shadow: 0 0 10px #888;
 
     h2
     {
@@ -134,45 +121,28 @@ main
 
      > article
     {
-        display: table-cell;
+        flex: 4;
 
         padding: 2em;
     }
 
      > nav
     {
-        display: table-cell;
+        flex: 1;
 
-        width: 20%;
         padding: 2em;
 
-        ul
+        background-color: $navbar;
+
+        a
         {
-            width: auto;
-        }
+            display: block;
 
-        li
-        {
-            float: none;
+            text-decoration: none;
 
-            width: auto;
-
-            text-align: left;
+            color: $white;
         }
     }
-}
-
-
-h1
-{
-    font-size: 4em;
-
-    padding-top: 20px;
-
-    text-align: center;
-
-    color: $white;
-    text-shadow: 2px 2px 2px #000;
 }
 
 .home
@@ -186,16 +156,6 @@ li,
 h2
 {
     margin-bottom: 1em;
-}
-
-ol
-{
-    margin-left: 30px;
-}
-
-ul
-{
-    margin-left: 2em;
 }
 
 pre
@@ -222,57 +182,43 @@ footer
 
 form
 {
+    display: flex;
+    align-content: flex-start;
+    flex-flow: row wrap;
+    justify-content: center;
+
+    width: 70%;
     margin-top: 2em;
     padding-top: 2em;
 
     border-top: 1px solid #888;
+
+     > *
+    {
+        flex: 1 50%;
+    }
 
     select,
     label,
     input,
     textarea
     {
-        float: left;
-
-        width: 200px;
         margin-top: 20px;
         padding: 10px;
-    }
-
-    select
-    {
-        width: 220px;
-    }
-
-    label
-    {
-        clear: left;
     }
 
     input[type='text'],
     input[type='password']
     {
-        font-family: verdana, sans-serif;
-
         color: #999;
     }
 }
 
 textarea
 {
-    font-family: verdana, sans-serif;
-
     height: 100px;
 
     color: #999;
-}
-
-input[type='submit']
-{
-    clear: both;
-
-    width: 220px;
-    margin-left: 220px;
 }
 
 section a
@@ -285,6 +231,13 @@ table
     width: 100%;
     margin-top: 20px;
 
+    td
+    {
+        padding: 5px;
+
+        border-bottom: 1px solid $navbar;
+    }
+
     td input[type='submit']
     {
         float: right;
@@ -293,88 +246,4 @@ table
         margin: 0;
         padding: auto;
     }
-}
-
-td
-{
-    padding: 5px;
-
-    border-bottom: 1px solid #333;
-}
-
-.jobs
-{
-    list-style-type: none;
-
-    strong
-    {
-        float: left;
-        clear: left;
-
-        width: 150px;
-    }
-
-    p
-    {
-        float: left;
-
-        width: 500px;
-    }
-
-    li
-    {
-        overflow: auto;
-
-        padding-top: 20px;
-        padding-bottom: 20px;
-
-        border-bottom: 2px solid #aaa;
-    }
-
-    a
-    {
-        float: right;
-        clear: both;
-    }
-}
-
-img.shop
-{
-    width: 800px;
-}
-
-.stock,
-.admin
-{
-    display: table;
-}
-
-.stock > ul,
-.admin .left
-{
-    display: table-cell;
-
-    width: 10vw;
-    margin: 0;
-    padding: 10px;
-
-    list-style-type: none;
-
-    background-color: #555;
-}
-
-.stock .products,
-.admin .right
-{
-    display: table-cell;
-
-    padding: 20px;
-}
-
-.stock > ul a,
-.admin .left a
-{
-    text-decoration: none;
-
-    color: $white;
 }
