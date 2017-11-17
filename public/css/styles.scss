@@ -4,6 +4,7 @@
 $white: #fff;
 $headerBackground: #778baf;
 $navbar: #333;
+$black: #000;
 
 *,
 *::before,
@@ -44,7 +45,7 @@ header
         text-align: center;
 
         color: $white;
-        text-shadow: 2px 2px 2px #000;
+        text-shadow: 2px 2px 2px $black;
     }
 }
 
@@ -78,7 +79,7 @@ header
                 -webkit-transition: max-height 1s;
                         transition: max-height 1s;
 
-                background-color: #333;
+                background-color: $navbar;
             }
 
             &:hover ul
@@ -198,6 +199,11 @@ form
         flex: 1 50%;
     }
 
+     > p
+    {
+        flex: 2 100%;
+    }
+
     select,
     label,
     input,
@@ -212,6 +218,14 @@ form
     {
         color: #999;
     }
+
+    input[type='submit']
+    {
+        font-size: 100px;
+
+        width: 200px;
+        height: 200px;
+    }
 }
 
 textarea
@@ -224,26 +238,4 @@ textarea
 section a
 {
     color: #444;
-}
-
-table
-{
-    width: 100%;
-    margin-top: 20px;
-
-    td
-    {
-        padding: 5px;
-
-        border-bottom: 1px solid $navbar;
-    }
-
-    td input[type='submit']
-    {
-        float: right;
-
-        width: auto;
-        margin: 0;
-        padding: auto;
-    }
 }
