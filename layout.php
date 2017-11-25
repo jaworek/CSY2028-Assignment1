@@ -1,5 +1,3 @@
-<?php require 'functions.php'; ?>
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
@@ -7,8 +5,8 @@
 		<meta charset="utf-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<meta name="description" content="Group project">
-		<meta name="keywords" content="web">
+		<meta name="description" content="CSY">
+		<meta name="keywords" content="web, news, northampton">
 		<meta name="author" content="Jan Jaworski">
 
 		<title>Northampton News - <?php echo $title ?></title>
@@ -17,6 +15,7 @@
 		<link rel="stylesheet" href="css/styles.min.css">
 
 		<!-- Script -->
+		<script src="js/script.js" charset="utf-8"></script>
 	</head>
 
 	<body>
@@ -26,16 +25,13 @@
 
 		<nav class="nav">
 			<ul>
-				<li><a href="index.php">Home</a></li>
-				<li><a href="articles.php">Articles</a></li>
-				<li><a href="categories.php">Categories</a>
-					<ul>
-						<li><a href="#">Category 1</a></li>
-						<li><a href="#">Category 2</a></li>
-						<li><a href="#">Category 3</a></li>
-					</ul>
+				<li><a href="index.php?title=home">Home</a></li>
+				<li><a href="index.php?title=articles">Articles</a></li>
+				<li>
+					<a href="index.php?title=categories">Categories</a>
+					<ul><?php loadCategories($pdo); ?></ul>
 				</li>
-				<li><a href="contact.php">Contact</a></li>
+				<li><a href="index.php?title=contact">Contact</a></li>
 				<?php addLinks(); ?>
 			</ul>
 		</nav>

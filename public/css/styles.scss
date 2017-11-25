@@ -1,40 +1,31 @@
-/* Import website font */
-@import url('https://stockfont.org/?69772035349a8e4ece6e05f415d0c8ca31fff37ef65a22d6e1d3704659936440');
-
-$white: #fff;
+@import url("https://stockfont.org/?69772035349a8e4ece6e05f415d0c8ca31fff37ef65a22d6e1d3704659936440");
+$white: #ffffff;
 $headerBackground: #778baf;
-$navbar: #333;
-$black: #000;
+$navbar: #333333;
+$black: #000000;
 
-*,
-*::before,
-*::after
-{
+*, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-body
-{
-    font-family: 'Oxygen-Regular', times, verdana, sans-serif;
+body {
+    font-family: "Oxygen-Regular", times, verdana, sans-serif;
 
     background-color: $white;
 
-     > img
-    {
+     > img {
         display: block;
 
         width: 100%;
     }
 }
 
-header
-{
+header {
     background-color: $headerBackground;
 
-    h1
-    {
+    h1 {
         font-size: 4em;
         font-weight: bold;
         font-style: italic;
@@ -49,25 +40,21 @@ header
     }
 }
 
-.nav
-{
+.nav {
     background-color: $navbar;
 
-    ul
-    {
+    ul {
         display: flex;
         justify-content: center;
 
         list-style-type: none;
 
-        li
-        {
+        li {
             width: 150px;
 
             text-align: center;
 
-            ul
-            {
+            ul {
                 position: absolute;
 
                 display: block;
@@ -82,15 +69,13 @@ header
                 background-color: $navbar;
             }
 
-            &:hover ul
-            {
+            &:hover ul {
                 max-height: 500px;
             }
         }
     }
 
-    a
-    {
+    a {
         display: block;
 
         padding-top: 10px;
@@ -101,8 +86,7 @@ header
     }
 }
 
-main
-{
+main {
     display: flex;
     justify-content: center;
 
@@ -110,33 +94,29 @@ main
     min-height: 50vh;
     margin: auto;
 
-    color: #444;
-    background-color: #ddd;
-    -webkit-box-shadow: 0 0 10px #888;
-            box-shadow: 0 0 10px #888;
+    color: #444444;
+    background-color: #dddddd;
+    -webkit-box-shadow: 0 0 10px #888888;
+            box-shadow: 0 0 10px #888888;
 
-    h2
-    {
+    h2 {
         font-size: 2em;
     }
 
-     > article
-    {
+     > article {
         flex: 4;
 
         padding: 2em;
     }
 
-     > nav
-    {
+     > nav {
         flex: 1;
 
         padding: 2em;
 
         background-color: $navbar;
 
-        a
-        {
+        a {
             display: block;
 
             text-decoration: none;
@@ -146,43 +126,34 @@ main
     }
 }
 
-.home
-{
+.home {
     width: 60vw;
     padding: 5vw;
 }
 
-p,
-li,
-h2
-{
+p, li, h2 {
     margin-bottom: 1em;
 }
 
-pre
-{
+pre {
     margin-top: 20px;
 
-    code
-    {
+    code {
         display: block;
     }
 }
 
-code
-{
-    background-color: #ccc;
+code {
+    background-color: #cccccc;
 }
 
-footer
-{
+footer {
     padding: 10px;
 
-    background-color: #ccc;
+    background-color: #cccccc;
 }
 
-form
-{
+form {
     display: flex;
     align-content: flex-start;
     flex-flow: row wrap;
@@ -192,35 +163,26 @@ form
     margin-top: 2em;
     padding-top: 2em;
 
-    border-top: 1px solid #888;
+    border-top: 1px solid #888888;
 
-     > *
-    {
+     > * {
         flex: 1 50%;
     }
 
-     > p
-    {
+     > p {
         flex: 2 100%;
     }
 
-    select,
-    label,
-    input,
-    textarea
-    {
+    select, label, input, textarea {
         margin-top: 20px;
         padding: 10px;
     }
 
-    input[type='text'],
-    input[type='password']
-    {
-        color: #999;
+    input[type="text"], input[type="password"] {
+        color: #999999;
     }
 
-    input[type='submit']
-    {
+    input[type="submit"] {
         font-size: 100px;
 
         width: 200px;
@@ -228,14 +190,12 @@ form
     }
 }
 
-textarea
-{
+textarea {
     height: 100px;
 
-    color: #999;
+    color: #999999;
 }
 
-section a
-{
-    color: #444;
+section a {
+    color: #444444;
 }

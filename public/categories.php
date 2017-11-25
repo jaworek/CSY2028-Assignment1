@@ -1,5 +1,5 @@
 <?php
-session_start();
-$title = "Select Category";
-$content = file_get_contents('../html/categories.html');
-require '../layout.php';
+if (isset($_GET['title'])) {
+    # code...
+} else {
+}
