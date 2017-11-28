@@ -1,12 +1,13 @@
 <?php
 
+// navigation bar functions
 function createNavbar()
 {
 }
 
 function loadCategories($pdo)
 {
-    $results = $pdo->query('SELECT title FROM categories;');
+    $results = findAll($pdo, 'categories');
     foreach ($results as $row) {
         echo '<li><a href=categories.php?title="' . $row['title'] . '">' . $row['title'] . '</a></li>';
     }
@@ -27,6 +28,7 @@ function addLinks()
     }
 }
 
+// database functions
 function connect()
 {
     $server = 'v.je';
@@ -43,7 +45,8 @@ function disconnect($pdo)
     $pdo = null;
 }
 
-// function based on the slides provided by Thomas Butler, 2017
+// query functions
+// functions are based on the slides provided by Thomas Butler, 2017
 function find($pdo, $table, $field, $value)
 {
     $stmt = $pdo->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = :value');
@@ -55,13 +58,34 @@ function find($pdo, $table, $field, $value)
     return $stmt->fetch();
 }
 
+function findTest($pdo, $table, $field = null, $value = null)
+{
+    $query = 'SELECT * FROM ' . $table;
+    if ($field != null && $value != null) {
+        $query .= ' WHERE ' . $field . ' = :value';
+
+        $criteria = [
+          'value' => $value
+        ];
+
+        $stmt = $pdo->prepare($query);
+        $stmt->execute($criteria);
+        return $stmt->fetch();
+    }
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchall();
+}
+
 function findAll($pdo, $table)
 {
-  $stmt = $pdo->prepare('SELECT * FROM ' . $table);
+    $stmt = $pdo->prepare('SELECT * FROM ' . $table);
 
-  $stmt->execute();
+    $stmt->execute();
 
-  return $stmt->fetch();
+    return $stmt->fetchall();
 }
 
 function update($pdo, $table, $record, $primaryKey)
@@ -101,4 +125,13 @@ function delete($pdo, $table, $record)
     $stmt->execute($criteria);
 
     return $stmt->fetch();
+}
+
+//
+function logout()
+{
+    if (isset($_SESSION['logged'])) {
+        session_destroy();
+    }
+    header("Location: index.php");
 }

@@ -1,6 +1,12 @@
 <?php
-ob_start();
+if (!isset($_SESSION['logged'])) {
+  header("Location: index.php?title=login");
+}
+if ($_SESSION['logged'] != 'admin') {
+  header("Location: index.php?title=home");
+}
 ?>
+
 <nav>
   <ul>
     <li><a href="index.php?title=admin&option=addUser">Add user</a></li>
@@ -18,18 +24,6 @@ ob_start();
 <article>
 
 <?php
-$admin = ob_get_clean();
-
-if (isset($_SESSION['logged'])) {
-    if ($_SESSION['logged'] == 'admin') {
-        echo $admin;
-    } else {
-        header("Location: index.php?title=home");
-    }
-} else {
-    header("Location: index.php?title=login");
-}
-
 if (isset($_GET['option'])) {
     switch ($_GET['option']) {
       case 'addUser':
@@ -39,7 +33,7 @@ if (isset($_GET['option'])) {
         echo "editUser";
         break;
       case 'deleteUser':
-        echo "deleteUser";
+        deleteList($pdo, 'users', ['user_id', 'email'], 'Delete');
         break;
       case 'addArticle':
         echo "addArticle";
@@ -48,7 +42,7 @@ if (isset($_GET['option'])) {
         echo "editArticle";
         break;
       case 'deleteArticle':
-        echo "deleteArticle";
+        deleteList($pdo, 'articles', ['article_id', 'title'], 'Delete');
         break;
       case 'addCategory':
         echo "addCategory";
@@ -57,7 +51,7 @@ if (isset($_GET['option'])) {
         echo "editCategory";
         break;
       case 'deleteCategory':
-        echo "deleteCategory";
+        deleteList($pdo, 'categories', ['category_id', 'title'], 'Delete');
         break;
       default:
         echo "bob";
@@ -67,3 +61,19 @@ if (isset($_GET['option'])) {
 ?>
 
 </article>
+
+<?php
+function deleteList($pdo, $table, $columns, $function)
+{
+    $elements = findAll($pdo, $table);
+
+    echo "<table>";
+    foreach ($elements as $element) {
+        echo '<tr>';
+        foreach ($columns as $value) {
+            echo "<td>" . $element[$value] . "</td>";
+        }
+        echo '<td><a href="index.php?title=admin&option=' . $_GET['option'] . '&function=' . $function . '">' . $function . '</a></td></tr>';
+    }
+    echo "</table>";
+}

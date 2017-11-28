@@ -1,6 +1,6 @@
 <?php
-$articles = $pdo->query('SELECT * FROM articles');
+$articles = findTest($pdo, 'articles');
 
 foreach ($articles as $article) {
-  echo "<article><h3>" . $article['title'] . "</h3><p>" . $article['content'] . "</p></article>";
+    echo "<article><h3>" . $article['title'] . "</h3><p>" . $article['content'] . "</p></article>";
 }

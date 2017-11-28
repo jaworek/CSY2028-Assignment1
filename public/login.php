@@ -8,7 +8,7 @@
 
 <?php
 if (isset($_POST['login']) && isset($_POST['password'])) {
-    $row = find($pdo, 'users', 'email', $_POST['login']);
+    $row = findTest($pdo, 'users', 'email', $_POST['login']);
 
     if ($_POST['login'] == $row['email'] && $_POST['password'] == $row['password']) {
         if ($row['access_level'] == 'admin') {

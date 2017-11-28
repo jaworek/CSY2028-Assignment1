@@ -28,7 +28,7 @@ if (isset($_GET['title'])) {
       require 'register.php';
       break;
     case 'logout':
-      require 'logout.php';
+      logout();
       break;
     case 'profile':
       require 'profile.php';
@@ -40,7 +40,6 @@ if (isset($_GET['title'])) {
   }
 } else {
   $title = 'Home';
-
   require 'home.php';
 }
 
