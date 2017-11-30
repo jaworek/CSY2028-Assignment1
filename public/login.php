@@ -7,10 +7,13 @@
 </form>
 
 <?php
+isLogged();
+
 if (isset($_POST['login']) && isset($_POST['password'])) {
-    $row = findTest($pdo, 'users', 'email', $_POST['login']);
+    $row = $database->findTest('users', 'email', $_POST['login']);
 
     if ($_POST['login'] == $row['email'] && $_POST['password'] == $row['password']) {
+        $_SESSION['email'] = $row['email'];
         if ($row['access_level'] == 'admin') {
             $_SESSION['logged'] = 'admin';
             header("Location: index.php?title=admin");

@@ -1,3 +1,25 @@
+<?php
+isLogged();
+
+$valuesSet = isset($_POST['login'], $_POST['login2'], $_POST['password'], $_POST['password2']);
+
+if ($valuesSet) {
+    $valuesEqual = $_POST['login'] == $_POST['login2'] && $_POST['password'] == $_POST['password2'];
+
+    if ($valuesEqual) {
+        $newUser = [
+          'email' => $_POST['login'],
+          'password' => $_POST['password']
+        ];
+
+        $database->insert('users', $newUser);
+        echo "account created";
+    } else {
+        echo "not matching";
+    }
+}
+?>
+
 <form action="index.php?title=register" method="post">
   <label for="login">Email</label>
   <input id="login" type="email" name="login" placeholder="user@email.com">
@@ -9,22 +31,3 @@
   <input id="password2" type="password" name="password2" placeholder="********">
   <input type="submit" name="button" value="Login">
 </form>
-
-<?php
-$valuesSet = isset($_POST['login'], $_POST['login2'], $_POST['password'], $_POST['password2']);
-
-if ($valuesSet) {
-    $valuesEqual = $_POST['login'] == $_POST['login2'] && $_POST['password'] == $_POST['password2'];
-    
-    if ($valuesEqual) {
-        $newUser = [
-          'email' => $_POST['login'],
-          'password' => $_POST['password']
-        ];
-
-        insert($pdo, 'users', $newUser);
-        echo "account created";
-    } else {
-        echo "not matching";
-    }
-}

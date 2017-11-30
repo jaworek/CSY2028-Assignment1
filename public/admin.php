@@ -1,9 +1,9 @@
 <?php
 if (!isset($_SESSION['logged'])) {
-  header("Location: index.php?title=login");
+    header("Location: index.php?title=login");
 }
 if ($_SESSION['logged'] != 'admin') {
-  header("Location: index.php?title=home");
+    header("Location: index.php?title=home");
 }
 ?>
 
@@ -27,13 +27,13 @@ if ($_SESSION['logged'] != 'admin') {
 if (isset($_GET['option'])) {
     switch ($_GET['option']) {
       case 'addUser':
-        echo "addUser";
+        addUser();
         break;
       case 'editUser':
-        echo "editUser";
+        listOptions($database, 'users', ['email'], 'Edit');
         break;
       case 'deleteUser':
-        deleteList($pdo, 'users', ['user_id', 'email'], 'Delete');
+        listOptions($database, 'users', ['email'], 'Delete');
         break;
       case 'addArticle':
         echo "addArticle";
@@ -42,7 +42,7 @@ if (isset($_GET['option'])) {
         echo "editArticle";
         break;
       case 'deleteArticle':
-        deleteList($pdo, 'articles', ['article_id', 'title'], 'Delete');
+        listOptions($database, 'articles', ['article_id', 'title'], 'Delete');
         break;
       case 'addCategory':
         echo "addCategory";
@@ -51,10 +51,10 @@ if (isset($_GET['option'])) {
         echo "editCategory";
         break;
       case 'deleteCategory':
-        deleteList($pdo, 'categories', ['category_id', 'title'], 'Delete');
+        listOptions($database, 'categories', ['title'], 'Delete');
         break;
       default:
-        echo "bob";
+        echo "Not a valid option";
         break;
     }
 }
@@ -63,9 +63,19 @@ if (isset($_GET['option'])) {
 </article>
 
 <?php
-function deleteList($pdo, $table, $columns, $function)
+function addUser()
 {
-    $elements = findAll($pdo, $table);
+    echo "<p>Create new user</p>";
+    echo "<form>";
+    echo '<input type="email" name="email"></input>';
+    echo '<input type="password" name="password"></input>';
+    echo '<input type="submit" name="button" value="Create"></input>';
+    echo "</form>";
+}
+
+function listOptions($database, $table, $columns, $function)
+{
+    $elements = $database->findAll($table);
 
     echo "<table>";
     foreach ($elements as $element) {
@@ -76,4 +86,9 @@ function deleteList($pdo, $table, $columns, $function)
         echo '<td><a href="index.php?title=admin&option=' . $_GET['option'] . '&function=' . $function . '">' . $function . '</a></td></tr>';
     }
     echo "</table>";
+}
+
+if (isset($_GET['function'])) {
+    if ($_GET['function'] == 'Edit') {
+    }
 }

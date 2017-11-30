@@ -1,14 +1,15 @@
 <?php
 session_start();
 require '../functions.php';
-$pdo = connect();
+$database = new Database();
+// $pdo = $database->test;
 
 ob_start();
 
 if (isset($_GET['title'])) {
-  $title = $_GET['title'];
+    $title = $_GET['title'];
 
-  switch ($title) {
+    switch ($title) {
     case 'admin':
       require 'admin.php';
       break;
@@ -39,8 +40,8 @@ if (isset($_GET['title'])) {
       break;
   }
 } else {
-  $title = 'Home';
-  require 'home.php';
+    $title = 'Home';
+    require 'home.php';
 }
 
 $content = ob_get_clean();

@@ -104,10 +104,16 @@ main {
         font-size: 2em;
     }
 
-     > article {
+     > section {
+        display: flex;
         flex: 4;
+        flex-flow: row wrap;
 
-        padding: 2em;
+        article {
+            flex: 1 100%;
+
+            padding: 2em;
+        }
     }
 
      > nav {
@@ -124,6 +130,12 @@ main {
 
             color: $white;
         }
+    }
+
+     > article {
+        flex: 4;
+
+        padding: 2em;
     }
 }
 
@@ -160,9 +172,7 @@ form {
     flex-flow: row wrap;
     justify-content: center;
 
-    width: 70%;
     margin-top: 2em;
-    padding-top: 2em;
 
     border-top: 1px solid #888888;
 

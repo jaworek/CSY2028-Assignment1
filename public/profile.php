@@ -20,13 +20,13 @@ if ($_SESSION['logged'] == 'admin') {
 if (isset($_GET['option'])) {
     switch ($_GET['option']) {
     case 'email':
-      echo "Change email";
+      changeEmail();
       break;
     case 'password':
-      echo "Change password";
+      changePassword();
       break;
     case 'delete':
-      echo "Delete account";
+      deleteAccount($database);
       break;
     default:
       echo "Not a valid option";

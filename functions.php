@@ -5,11 +5,11 @@ function createNavbar()
 {
 }
 
-function loadCategories($pdo)
+function loadCategories($database)
 {
-    $results = findAll($pdo, 'categories');
+    $results = $database->findAll('categories');
     foreach ($results as $row) {
-        echo '<li><a href=categories.php?title="' . $row['title'] . '">' . $row['title'] . '</a></li>';
+        echo '<li><a href=index.php?title=categories&option=' . $row['title'] . '>' . $row['title'] . '</a></li>';
     }
 }
 
@@ -28,106 +28,125 @@ function addLinks()
     }
 }
 
-// database functions
-function connect()
+// database class
+class Database
 {
-    $server = 'v.je';
-    $username = 'student';
-    $password = 'student';
-    $schema = 'assign';
-    $pdo = new PDO('mysql:dbname=' . $schema . ';host=' . $server, $username, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+    public $pdo;
 
-    return $pdo;
-}
+    public function __construct()
+    {
+        $this->pdo = $this->connect();
+    }
 
-function disconnect($pdo)
-{
-    $pdo = null;
-}
+    public function connect()
+    {
+        $server = 'v.je';
+        $username = 'student';
+        $password = 'student';
+        $schema = 'assign';
+        $pdo = new PDO('mysql:dbname=' . $schema . ';host=' . $server, $username, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
 
-// query functions
-// functions are based on the slides provided by Thomas Butler, 2017
-function find($pdo, $table, $field, $value)
-{
-    $stmt = $pdo->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = :value');
-    $criteria = [
-    'value' => $value
-  ];
-    $stmt->execute($criteria);
+        return $pdo;
+    }
 
-    return $stmt->fetch();
-}
+    public function disconnect()
+    {
+        $pdo = null;
+    }
 
-function findTest($pdo, $table, $field = null, $value = null)
-{
-    $query = 'SELECT * FROM ' . $table;
-    if ($field != null && $value != null) {
-        $query .= ' WHERE ' . $field . ' = :value';
-
+    // query functions
+    // functions are based on the slides provided by Thomas Butler, 2017
+    public function find($table, $field, $value, $many = null)
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = :value');
         $criteria = [
-          'value' => $value
-        ];
-
-        $stmt = $pdo->prepare($query);
+        'value' => $value
+      ];
         $stmt->execute($criteria);
+
+        if ($many != null) {
+            return $stmt->fetchall();
+        }
+
         return $stmt->fetch();
     }
 
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
+    public function findTest($table, $field = null, $value = null)
+    {
+        $query = 'SELECT * FROM ' . $table;
+        if ($field != null && $value != null) {
+            $query .= ' WHERE ' . $field . ' = :value';
 
-    return $stmt->fetchall();
-}
+            $criteria = [
+              'value' => $value
+            ];
 
-function findAll($pdo, $table)
-{
-    $stmt = $pdo->prepare('SELECT * FROM ' . $table);
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($criteria);
+            return $stmt->fetch();
+        }
 
-    $stmt->execute();
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
 
-    return $stmt->fetchall();
-}
+        return $stmt->fetchall();
+    }
 
-function update($pdo, $table, $record, $primaryKey)
-{
-    $query = 'UPDATE ' . $table . ' SET ';
-    $parameters = [];
-    foreach ($record as $key => $value) {
-        $parameters[] = $key . ' = :' .$key;
-        $query .= implode(', ', $parameters);
-        $query .= ' WHERE ' . $primaryKey . ' = :primaryKey';
-        $record['primaryKey'] = $record[$primaryKey];
-        $stmt = $pdo->prepare($query);
+    public function findAll($table)
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM ' . $table);
+
+        $stmt->execute();
+
+        return $stmt->fetchall();
+    }
+
+    public function update($table, $record, $primaryKey)
+    {
+        $query = 'UPDATE ' . $table . ' SET ';
+        $parameters = [];
+        foreach ($record as $key => $value) {
+            $parameters[] = $key . ' = :' .$key;
+            $query .= implode(', ', $parameters);
+            $query .= ' WHERE ' . $primaryKey . ' = :primaryKey';
+            $record['primaryKey'] = $record[$primaryKey];
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($record);
+        }
+    }
+
+    public function insert($table, $record)
+    {
+        $keys = array_keys($record);
+
+        $values = implode(', ', $keys);
+        $valuesWithColon = implode(', :', $keys);
+
+        $query = 'INSERT INTO ' . $table . ' (' . $values . ') VALUES (:' . $valuesWithColon . ')';
+
+        $stmt = $this->pdo->prepare($query);
+
         $stmt->execute($record);
+    }
+
+    public function delete($table, $field, $value)
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM ' . $table . ' WHERE ' . $field . ' = :value');
+        $criteria = [
+          'value' => $value
+        ];
+        $stmt->execute($criteria);
     }
 }
 
-function insert($pdo, $table, $record)
+// general functions
+function isLogged()
 {
-    $keys = array_keys($record);
-
-    $values = implode(', ', $keys);
-    $valuesWithColon = implode(', :', $keys);
-
-    $query = 'INSERT INTO ' . $table . ' (' . $values . ') VALUES (:' . $valuesWithColon . ')';
-
-    $stmt = $pdo->prepare($query);
-
-    $stmt->execute($record);
+    if (isset($_SESSION['logged'])) {
+        header("Location: index.php");
+    }
 }
 
-function delete($pdo, $table, $record)
-{
-    $stmt = $pdo->prepare('DELETE FROM ' . $table . ' WHERE ' . $field . ' = :value');
-    $criteria = [
-    'value' => $value
-  ];
-    $stmt->execute($criteria);
-
-    return $stmt->fetch();
-}
-
-//
 function logout()
 {
     if (isset($_SESSION['logged'])) {
@@ -135,3 +154,36 @@ function logout()
     }
     header("Location: index.php");
 }
+
+
+// user profile functions
+function changeEmail()
+{
+    if (isset($_POST['email'])) {
+        echo "Email changed successfully";
+        return;
+    }
+    echo '<form method="post"><input type="email" name="email" placeholder="Type in your new email"></input><input type="submit" name="Change"></input></form>';
+}
+
+function changePassword()
+{
+    if (isset($_POST['newPass']) && isset($_POST['newPass'])) {
+        echo "Password changed successfully";
+        return;
+    }
+    echo '<form method="post"><input type="password" name="oldPass" placeholder="Type in your old password"></input><input type="password" name="newPass" placeholder="Type in your new password"></input><input type="submit" name="Change"></input></form>';
+}
+
+function deleteAccount($database)
+{
+    if (isset($_POST['delete'])) {
+        echo "Account deleted successfully";
+        $database->delete('users', 'email', $_SESSION['email']);
+        logout();
+        return;
+    }
+    echo '<form method="post"><input type="submit" name="delete" value="Delete account"></input></form>';
+}
+
+// admin profile functions
