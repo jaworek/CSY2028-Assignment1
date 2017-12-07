@@ -2,7 +2,7 @@
 register($database);
 ?>
 
-<form action="index.php?title=register" method="post">
+<form action="index.php?title=admin&option=addUser" method="post">
   <label for="login">Email</label>
   <input id="login" type="email" name="login" placeholder="user@email.com">
   <label for="login2">Repeat email</label>

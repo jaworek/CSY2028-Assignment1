@@ -59,9 +59,11 @@ class Database
     public function find($table, $field, $value, $many = null)
     {
         $stmt = $this->pdo->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = :value');
+
         $criteria = [
         'value' => $value
-      ];
+        ];
+
         $stmt->execute($criteria);
 
         if ($many != null) {
@@ -152,7 +154,29 @@ function logout()
     if (isset($_SESSION['logged'])) {
         session_destroy();
     }
+
     header("Location: index.php");
+}
+
+function register($database)
+{
+    $valuesSet = isset($_POST['login'], $_POST['login2'], $_POST['password'], $_POST['password2']);
+
+    if ($valuesSet) {
+        $valuesEqual = $_POST['login'] == $_POST['login2'] && $_POST['password'] == $_POST['password2'];
+
+        if ($valuesEqual) {
+            $newUser = [
+            'email' => $_POST['login'],
+            'password' => $_POST['password']
+          ];
+
+            $database->insert('users', $newUser);
+            echo "Account has been successfully created";
+        } else {
+            echo "Email or password are not matching";
+        }
+    }
 }
 
 
@@ -163,6 +187,7 @@ function changeEmail()
         echo "Email changed successfully";
         return;
     }
+
     echo '<form method="post"><input type="email" name="email" placeholder="Type in your new email"></input><input type="submit" name="Change"></input></form>';
 }
 
@@ -172,6 +197,7 @@ function changePassword()
         echo "Password changed successfully";
         return;
     }
+
     echo '<form method="post"><input type="password" name="oldPass" placeholder="Type in your old password"></input><input type="password" name="newPass" placeholder="Type in your new password"></input><input type="submit" name="Change"></input></form>';
 }
 
@@ -183,7 +209,61 @@ function deleteAccount($database)
         logout();
         return;
     }
+
     echo '<form method="post"><input type="submit" name="delete" value="Delete account"></input></form>';
 }
 
 // admin profile functions
+function addUser()
+{
+}
+
+function addArticle()
+{
+}
+
+function addCategory()
+{
+    if (isset($_POST)) {
+    }
+}
+
+function editUser()
+{
+}
+
+function editArticle()
+{
+}
+
+function editCategory()
+{
+}
+
+function deleteUser()
+{
+}
+
+function deleteArticle()
+{
+}
+
+function deleteCategory()
+{
+}
+
+// function that provides list of elements with aplicable option to execute, e.g. delete user, edit article
+function listOptions($database, $table, $columns, $function, $primaryKey)
+{
+    $elements = $database->findAll($table);
+
+    echo '<table>';
+    foreach ($elements as $element) {
+        echo '<tr>';
+        foreach ($columns as $value) {
+            echo '<td>' . $element[$value] . '</td>';
+        }
+        echo '<td><a href="index.php?title=admin&option=' . $_GET['option'] . '&function=' . $function . '&key=' . $element[$primaryKey] . '">' . $function . '</a></td></tr>';
+    }
+    echo '</table>';
+}

@@ -2,7 +2,6 @@
 session_start();
 require '../functions.php';
 $database = new Database();
-// $pdo = $database->test;
 
 ob_start();
 
@@ -26,6 +25,7 @@ if (isset($_GET['title'])) {
       require 'login.php';
       break;
     case 'register':
+      isLogged();
       require 'register.php';
       break;
     case 'logout':

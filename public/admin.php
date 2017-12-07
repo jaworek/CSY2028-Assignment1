@@ -1,7 +1,9 @@
 <?php
+// if user has logged in, if not they are redirected to login page
 if (!isset($_SESSION['logged'])) {
     header("Location: index.php?title=login");
 }
+// if user does not have admin rights, they will be redirected to home page
 if ($_SESSION['logged'] != 'admin') {
     header("Location: index.php?title=home");
 }
@@ -27,31 +29,31 @@ if ($_SESSION['logged'] != 'admin') {
 if (isset($_GET['option'])) {
     switch ($_GET['option']) {
       case 'addUser':
-        addUser();
+        require '../forms/addUser.php';
         break;
       case 'editUser':
-        listOptions($database, 'users', ['email'], 'Edit');
+        require '../forms/editUser.php';
         break;
       case 'deleteUser':
-        listOptions($database, 'users', ['email'], 'Delete');
+        require '../forms/deleteUser.php';
         break;
       case 'addArticle':
-        echo "addArticle";
+        require '../forms/addArticle.php';
         break;
       case 'editArticle':
-        echo "editArticle";
+        require '../forms/editArticle.php';
         break;
       case 'deleteArticle':
-        listOptions($database, 'articles', ['article_id', 'title'], 'Delete');
+        require '../forms/deleteArticle.php';
         break;
       case 'addCategory':
-        echo "addCategory";
+        require '../forms/addCategory.php';
         break;
       case 'editCategory':
-        echo "editCategory";
+        require '../forms/editCategory.php';
         break;
       case 'deleteCategory':
-        listOptions($database, 'categories', ['title'], 'Delete');
+        require '../forms/deleteCategory.php';
         break;
       default:
         echo "Not a valid option";
@@ -63,30 +65,6 @@ if (isset($_GET['option'])) {
 </article>
 
 <?php
-function addUser()
-{
-    echo "<p>Create new user</p>";
-    echo "<form>";
-    echo '<input type="email" name="email"></input>';
-    echo '<input type="password" name="password"></input>';
-    echo '<input type="submit" name="button" value="Create"></input>';
-    echo "</form>";
-}
-
-function listOptions($database, $table, $columns, $function)
-{
-    $elements = $database->findAll($table);
-
-    echo "<table>";
-    foreach ($elements as $element) {
-        echo '<tr>';
-        foreach ($columns as $value) {
-            echo "<td>" . $element[$value] . "</td>";
-        }
-        echo '<td><a href="index.php?title=admin&option=' . $_GET['option'] . '&function=' . $function . '">' . $function . '</a></td></tr>';
-    }
-    echo "</table>";
-}
 
 if (isset($_GET['function'])) {
     if ($_GET['function'] == 'Edit') {
