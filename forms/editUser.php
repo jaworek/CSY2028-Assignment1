@@ -1,6 +1,5 @@
 <?php
 listOptions($database, 'users', ['email'], 'Edit', 'email');
-$address = "index.php?title=admin&option=editUser";
 
 if (isset($_GET['key'])) {
   $user = $database->find('users', 'email', $_GET['key']);
@@ -9,7 +8,7 @@ if (isset($_GET['key'])) {
 }
 ?>
 
-<form action="<?php echo $address ?>" method="post">
+<form action="index.php?title=admin&option=editUser" method="post">
   <input type="text" name="email" value="<?php if(isset($email)) echo $email; ?>">
   <input type="text" name="password" value="<?php if(isset($password)) echo $password; ?>">
   <select name="accessLevel">

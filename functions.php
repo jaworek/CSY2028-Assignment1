@@ -61,7 +61,7 @@ class Database
         $stmt = $this->pdo->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = :value');
 
         $criteria = [
-        'value' => $value
+            'value' => $value
         ];
 
         $stmt->execute($criteria);
@@ -80,7 +80,7 @@ class Database
             $query .= ' WHERE ' . $field . ' = :value';
 
             $criteria = [
-              'value' => $value
+                'value' => $value
             ];
 
             $stmt = $this->pdo->prepare($query);
@@ -108,7 +108,7 @@ class Database
         $query = 'UPDATE ' . $table . ' SET ';
         $parameters = [];
         foreach ($record as $key => $value) {
-            $parameters[] = $key . ' = :' .$key;
+            $parameters[] = $key . ' = :' . $key;
             $query .= implode(', ', $parameters);
             $query .= ' WHERE ' . $primaryKey . ' = :primaryKey';
             $record['primaryKey'] = $record[$primaryKey];
@@ -135,7 +135,7 @@ class Database
     {
         $stmt = $this->pdo->prepare('DELETE FROM ' . $table . ' WHERE ' . $field . ' = :value');
         $criteria = [
-          'value' => $value
+            'value' => $value
         ];
         $stmt->execute($criteria);
     }
@@ -167,9 +167,9 @@ function register($database)
 
         if ($valuesEqual) {
             $newUser = [
-            'email' => $_POST['login'],
-            'password' => $_POST['password']
-          ];
+                'email' => $_POST['login'],
+                'password' => $_POST['password']
+            ];
 
             $database->insert('users', $newUser);
             echo "Account has been successfully created";
@@ -214,41 +214,50 @@ function deleteAccount($database)
 }
 
 // admin profile functions
-function addUser()
+function addUser($database)
 {
 }
 
-function addArticle()
+function addArticle($database)
 {
-}
-
-function addCategory()
-{
-    if (isset($_POST)) {
+    if (isset($_POST['category_id'], $_POST['title'], $_POST['content'])) {
+        $newArticle = [
+            'category_id' => $_POST['category_id'],
+            'title' => $_POST['title'],
+            'content' => $_POST['content']
+        ];
+        $database->insert('articles', $newArticle);
     }
 }
 
-function editUser()
+function addCategory($database)
+{
+    if (isset($_POST['title'])) {
+        $database->insert('categories', [ 'title' => $_POST['title'] ]);
+    }
+}
+
+function editUser($database)
 {
 }
 
-function editArticle()
+function editArticle($database)
 {
 }
 
-function editCategory()
+function editCategory($database)
 {
 }
 
-function deleteUser()
+function deleteUser($database)
 {
 }
 
-function deleteArticle()
+function deleteArticle($database)
 {
 }
 
-function deleteCategory()
+function deleteCategory($database)
 {
 }
 
