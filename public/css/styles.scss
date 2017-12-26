@@ -88,6 +88,7 @@ header {
 
 main {
     display: flex;
+    align-items: flex-start;
     flex-flow: row wrap;
     justify-content: center;
 
@@ -100,14 +101,18 @@ main {
     -webkit-box-shadow: 0 0 10px #888888;
             box-shadow: 0 0 10px #888888;
 
-    h2 {
-        font-size: 2em;
-    }
-
-     > section {
+    section {
         display: flex;
         flex: 4;
         flex-flow: row wrap;
+
+         > h3 {
+            flex: 1 100%;
+
+            padding: 1em;
+
+            text-align: center;
+        }
 
         article {
             flex: 1 100%;

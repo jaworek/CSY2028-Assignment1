@@ -63,10 +63,3 @@ if (isset($_GET['option'])) {
 ?>
 
 </article>
-
-<?php
-
-if (isset($_GET['function'])) {
-    if ($_GET['function'] == 'Edit') {
-    }
-}

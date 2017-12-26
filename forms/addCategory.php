@@ -1,5 +1,5 @@
 <?php
-    addCategory($database);
+addCategory($database);
 ?>
 
 <form action="index.php?title=admin&option=addCategory" method="post">

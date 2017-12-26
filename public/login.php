@@ -10,9 +10,10 @@
 isLogged();
 
 if (isset($_POST['login']) && isset($_POST['password'])) {
-    $row = $database->findTest('users', 'email', $_POST['login']);
+    $row = $database->find('users', 'email', $_POST['login']);
 
-    if ($_POST['login'] == $row['email'] && $_POST['password'] == $row['password']) {
+    if ($_POST['login'] == $row['email'] && password_verify($_POST['password'], $row['password'])) {
+        $_SESSION['user_id'] = $row['user_id'];
         $_SESSION['email'] = $row['email'];
         if ($row['access_level'] == 'admin') {
             $_SESSION['logged'] = 'admin';

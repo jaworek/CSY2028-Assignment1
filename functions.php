@@ -13,6 +13,76 @@ function loadCategories($database)
     }
 }
 
+function listCategories($database)
+{
+    $categories = $database->findAll('categories');
+    echo "<ul>";
+    foreach ($categories as $category) {
+        echo '<li>' . $category['title'] . '</li>';
+    }
+    echo "</ul>";
+}
+
+function listArticles($articles)
+{
+    echo '<table>';
+    foreach ($articles as $article) {
+        echo '<tr>';
+        echo '<td><a href="index.php?title=articles&key=' . $article['article_id'] . '">' . $article['title'] . '</a></td></tr>';
+    }
+    echo '</table>';
+}
+
+function displayArticle($database, $key)
+{
+    $article = $database->find('articles', 'article_id', $key);
+    $comments = $database->find('comments', 'article_id', $article['article_id'], true);
+
+    echo '<article>';
+    echo '<h3>' . $article['title'] . '</h3>';
+    echo '<p>' . $article['content'] . '</p>';
+    echo '<h5>Comments: </h5>';
+
+    if ($comments != null) {
+        echo '<ul>';
+        foreach ($comments as $comment) {
+            echo '<li>' . $comment['content'] . '</li>';
+        }
+        echo '</ul>';
+    } else {
+        echo 'No comments<br><br>';
+    }
+
+    if (isset($_SESSION['email'])) {
+        echo '<form action="index.php?title=articles&key=' . $key . '" method=post>';
+        echo '<input hidden type="text" name="article_id" value="' . $article['article_id'] . '">';
+        echo '<textarea name="content"></textarea>';
+        echo '<input type="submit" name="comment">';
+        echo '</form>';
+    } else {
+        echo 'You need to <a href="index.php?title=login">Log-in</a> or You need to <a href="index.php?title=register">create an account</a> to be able to comment';
+    }
+
+    echo '</article>';
+
+    if (isset($_SESSION['email'])) {
+        addComment($database, $key);
+    }
+}
+
+function addComment($database, $key)
+{
+    if (isset($_POST['comment'])) {
+        $newComment = [
+            'article_id' => $_POST['article_id'],
+            'user_id' => $_SESSION['user_id'],
+            'content' => $_POST['content']
+        ];
+        $database->insert('comments', $newComment);
+        header('Location: index.php?title=articles&key=' . $key);
+    }
+}
+
 function addLinks()
 {
     if (isset($_SESSION['logged'])) {
@@ -67,31 +137,10 @@ class Database
         $stmt->execute($criteria);
 
         if ($many != null) {
-            return $stmt->fetchall();
+            return $stmt->fetchAll();
         }
 
         return $stmt->fetch();
-    }
-
-    public function findTest($table, $field = null, $value = null)
-    {
-        $query = 'SELECT * FROM ' . $table;
-        if ($field != null && $value != null) {
-            $query .= ' WHERE ' . $field . ' = :value';
-
-            $criteria = [
-                'value' => $value
-            ];
-
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute($criteria);
-            return $stmt->fetch();
-        }
-
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-
-        return $stmt->fetchall();
     }
 
     public function findAll($table)
@@ -109,12 +158,12 @@ class Database
         $parameters = [];
         foreach ($record as $key => $value) {
             $parameters[] = $key . ' = :' . $key;
-            $query .= implode(', ', $parameters);
-            $query .= ' WHERE ' . $primaryKey . ' = :primaryKey';
-            $record['primaryKey'] = $record[$primaryKey];
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute($record);
         }
+        $query .= implode(', ', $parameters);
+        $query .= ' WHERE ' . $primaryKey . ' = :primaryKey';
+        $record['primaryKey'] = $record[$primaryKey];
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($record);
     }
 
     public function insert($table, $record)
@@ -168,7 +217,7 @@ function register($database)
         if ($valuesEqual) {
             $newUser = [
                 'email' => $_POST['login'],
-                'password' => $_POST['password']
+                'password' => password_hash($_POST['password'], PASSWORD_DEFAULT)
             ];
 
             $database->insert('users', $newUser);
@@ -188,7 +237,11 @@ function changeEmail()
         return;
     }
 
-    echo '<form method="post"><input type="email" name="email" placeholder="Type in your new email"></input><input type="submit" name="Change"></input></form>';
+    echo '<form method="post">';
+    echo '<input type="email" name="email" placeholder="Type in your new email">';
+    echo '<input type="email" name="email2" placeholder="Repeat your new email">';
+    echo '<input type="submit" name="Change">';
+    echo '</form>';
 }
 
 function changePassword()
@@ -198,7 +251,12 @@ function changePassword()
         return;
     }
 
-    echo '<form method="post"><input type="password" name="oldPass" placeholder="Type in your old password"></input><input type="password" name="newPass" placeholder="Type in your new password"></input><input type="submit" name="Change"></input></form>';
+    echo '<form method="post">';
+    echo '<input type="password" name="oldPass" placeholder="Type in your old password">';
+    echo '<input type="password" name="newPass" placeholder="Type in your new password">';
+    echo '<input type="password" name="newPass2" placeholder="Type in your new password again">';
+    echo '<input type="submit" name="Change">';
+    echo '</form>';
 }
 
 function deleteAccount($database)
@@ -210,21 +268,18 @@ function deleteAccount($database)
         return;
     }
 
-    echo '<form method="post"><input type="submit" name="delete" value="Delete account"></input></form>';
+    echo '<form method="post"><input type="submit" name="delete" value="Delete account"></form>';
 }
 
 // admin profile functions
-function addUser($database)
-{
-}
-
 function addArticle($database)
 {
     if (isset($_POST['category_id'], $_POST['title'], $_POST['content'])) {
         $newArticle = [
             'category_id' => $_POST['category_id'],
             'title' => $_POST['title'],
-            'content' => $_POST['content']
+            'content' => $_POST['content'],
+            'user_id' => $_SESSION['user_id']
         ];
         $database->insert('articles', $newArticle);
     }
@@ -233,32 +288,43 @@ function addArticle($database)
 function addCategory($database)
 {
     if (isset($_POST['title'])) {
-        $database->insert('categories', [ 'title' => $_POST['title'] ]);
+        $database->insert('categories', ['title' => $_POST['title']]);
     }
 }
 
 function editUser($database)
 {
+    if (isset($_GET['key'])) {
+        $user = $database->find('users', 'email', $_GET['key']);
+        $email = $user['email'];
+        $password = $user['password'];
+    }
 }
 
 function editArticle($database)
 {
+    if (isset($_GET['key'])) {
+        $article = $database->find('articles', 'article_id', $_GET['key']);
+        $category_id = $article['article_id'];
+        $artTitle = $article['title'];
+        $content = $article['content'];
+    }
 }
 
 function editCategory($database)
 {
+    if (isset($_GET['key'])) {
+        $category = $database->find('categories', 'category_id', $_GET['key']);
+        $catTitle = $category['title'];
+    }
 }
 
-function deleteUser($database)
+function deleteRow($database, $table, $primaryKey, $redirect)
 {
-}
-
-function deleteArticle($database)
-{
-}
-
-function deleteCategory($database)
-{
+    if (isset($_GET['key'])) {
+        $database->delete($table, $primaryKey, $_GET['key']);
+        header("Location: index.php?title=admin&option=" . $redirect);
+    }
 }
 
 // function that provides list of elements with aplicable option to execute, e.g. delete user, edit article
@@ -272,7 +338,7 @@ function listOptions($database, $table, $columns, $function, $primaryKey)
         foreach ($columns as $value) {
             echo '<td>' . $element[$value] . '</td>';
         }
-        echo '<td><a href="index.php?title=admin&option=' . $_GET['option'] . '&function=' . $function . '&key=' . $element[$primaryKey] . '">' . $function . '</a></td></tr>';
+        echo '<td><a href="index.php?title=admin&option=' . $_GET['option'] . '&key=' . $element[$primaryKey] . '">' . $function . '</a></td></tr>';
     }
     echo '</table>';
 }
