@@ -8,27 +8,24 @@ function createNavbar()
 function loadCategories($database)
 {
     $results = $database->findAll('categories');
+    echo '<ul>';
     foreach ($results as $row) {
         echo '<li><a href=index.php?title=categories&option=' . $row['title'] . '>' . $row['title'] . '</a></li>';
     }
-}
-
-function listCategories($database)
-{
-    $categories = $database->findAll('categories');
-    echo "<ul>";
-    foreach ($categories as $category) {
-        echo '<li>' . $category['title'] . '</li>';
-    }
-    echo "</ul>";
+    echo '</ul>';
 }
 
 function listArticles($articles)
 {
     echo '<table>';
-    foreach ($articles as $article) {
+    for ($i = count($articles) - 1; $i >= 0; $i--) {
+        $article = $articles[$i];
+
         echo '<tr>';
-        echo '<td><a href="index.php?title=articles&key=' . $article['article_id'] . '">' . $article['title'] . '</a></td></tr>';
+        echo '<td><a href="index.php?title=articles&key=' . $article['article_id'] . '">' . $article['title'] . '</a></td>';
+        echo '<td>Author: ' . $article['user_id'] . '</td>';
+        echo '<td>Date: ' . $article['post_date'] . '</td>';
+        echo '</tr>';
     }
     echo '</table>';
 }
@@ -42,21 +39,26 @@ function displayArticle($database, $key)
     echo '<h3>' . $article['title'] . '</h3>';
     echo '<p>' . $article['content'] . '</p>';
     echo '<h5>Comments: </h5>';
+    echo '<ul>';
 
     if ($comments != null) {
-        echo '<ul>';
         foreach ($comments as $comment) {
-            echo '<li>' . $comment['content'] . '</li>';
+            if ($comment['approved'] == 'false') {
+                echo '<li>This comment needs to be approved by the admin.</li>';
+            } else {
+                echo '<li>' . $comment['content'] . '</li>';
+            }
         }
-        echo '</ul>';
     } else {
-        echo 'No comments<br><br>';
+        echo '<li>No comments.</li>';
     }
+
+    echo '</ul>';
 
     if (isset($_SESSION['email'])) {
         echo '<form action="index.php?title=articles&key=' . $key . '" method=post>';
         echo '<input hidden type="text" name="article_id" value="' . $article['article_id'] . '">';
-        echo '<textarea name="content"></textarea>';
+        echo '<textarea name="content" maxlength="500"></textarea>';
         echo '<input type="submit" name="comment">';
         echo '</form>';
     } else {
@@ -228,7 +230,6 @@ function register($database)
     }
 }
 
-
 // user profile functions
 function changeEmail()
 {
@@ -327,10 +328,10 @@ function deleteRow($database, $table, $primaryKey, $redirect)
     }
 }
 
-// function that provides list of elements with aplicable option to execute, e.g. delete user, edit article
-function listOptions($database, $table, $columns, $function, $primaryKey)
+// function that provides list of elements with applicable option to execute, e.g. delete user, edit article
+function listOptions($elements, $columns, $function, $primaryKey)
 {
-    $elements = $database->findAll($table);
+//    $elements = $database->findAll($table);
 
     echo '<table>';
     foreach ($elements as $element) {

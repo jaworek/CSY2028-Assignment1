@@ -29,7 +29,7 @@
 				<li><a href="index.php?title=articles">Articles</a></li>
 				<li>
 					<a href="index.php?title=categories">Categories</a>
-					<ul><?php loadCategories($database); ?></ul>
+					<?php loadCategories($database); ?>
 				</li>
 				<li><a href="index.php?title=contact">Contact</a></li>
 				<?php addLinks(); ?>

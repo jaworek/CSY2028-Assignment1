@@ -14,7 +14,7 @@ if (isset($_GET['option'])) {
     }
 
 } else {
-    listCategories($database);
+    loadCategories($database);
 }
 ?>
 

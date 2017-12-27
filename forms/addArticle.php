@@ -13,7 +13,9 @@ $categories = $database->findAll('categories');
             }
         ?>
     </select>
-    <input type="text" name="title" placeholder="title">
-    <textarea name="content" placeholder="content"></textarea>
+    <label for="title">Title: </label>
+    <input id="title" type="text" name="title" placeholder="title">
+    <label for="content">Content: </label>
+    <textarea id="content" name="content" placeholder="content" maxlength="5000"></textarea>
     <input type="submit" name="submit" value="Add article">
 </form>

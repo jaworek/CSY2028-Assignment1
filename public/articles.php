@@ -1,5 +1,5 @@
 <section>
-
+    <h3>Articles</h3>
     <?php
     $articles = $database->findAll('articles');
 

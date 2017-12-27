@@ -1,12 +1,12 @@
 <?php
-listOptions($database, 'users', ['email'], 'Edit', 'user_id');
+$users = $database->findAll('users');
+listOptions( $users, ['email'], 'Edit', 'user_id');
 
 if (isset($_GET['key'])) {
   $user = $database->find('users', 'user_id', $_GET['key']);
 }
 
 if (isset($_POST['email'])) {
-    echo 'bob';
     $record = [
         'user_id' => $user['user_id'],
         'email' => $_POST['email'],
@@ -20,11 +20,13 @@ if (isset($_POST['email'])) {
 ob_start();
 ?>
 
-<form action="index.php?title=admin&option=editUser" method="post">
-  <input type="text" name="email" value="<?php echo $user['email']; ?>">
-  <select name="access_level">
-    <option <?php if ($user['access_level'] == 'user') { echo 'selected';} ?> value="user">User</option>
-    <option <?php if ($user['access_level'] == 'admin') { echo 'selected';} ?> value="admin">Admin</option>
+<form action="index.php?title=admin&option=editUser&key=<?php echo $_GET['key'] ?>" method="post">
+    <label for="email">Email</label>
+    <input id="email" type="text" name="email" value="<?php echo $user['email']; ?>">
+    <label for="access_level">Access level</label>
+    <select id="access_level" name="access_level">
+    <option <?php if ($user['access_level'] == 'user') { echo 'selected'; } ?> value="user">User</option>
+    <option <?php if ($user['access_level'] == 'admin') { echo 'selected'; } ?> value="admin">Admin</option>
   </select>
   <input type="submit" name="submit">
 </form>
