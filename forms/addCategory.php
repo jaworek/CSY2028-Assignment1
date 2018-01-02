@@ -1,3 +1,4 @@
+<h3>Add category</h3>
 <?php
 addCategory($database);
 ?>

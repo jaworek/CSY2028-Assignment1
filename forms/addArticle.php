@@ -1,3 +1,4 @@
+<h3>Add article</h3>
 <?php
 addArticle($database);
 $categories = $database->findAll('categories');

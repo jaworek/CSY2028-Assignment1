@@ -1,3 +1,4 @@
+<h3>Add user</h3>
 <?php
 register($database);
 ?>

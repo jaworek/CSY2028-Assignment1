@@ -1,4 +1,5 @@
 <article>
+  <h3>Contact</h3>
   <p>
     Page created by:
     <a href="https://github.com/jaworek?tab=stars" target="_blank" rel="noopener">Jan Jaworski</a>

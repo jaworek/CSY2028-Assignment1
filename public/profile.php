@@ -1,5 +1,5 @@
 <?php
-if (!isset($_SESSION['logged'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: index.php?title=login");
 }
 if ($_SESSION['logged'] == 'admin') {
@@ -20,10 +20,10 @@ if ($_SESSION['logged'] == 'admin') {
 if (isset($_GET['option'])) {
     switch ($_GET['option']) {
     case 'email':
-      changeEmail();
+      changeEmail($database);
       break;
     case 'password':
-      changePassword();
+      changePassword($database);
       break;
     case 'delete':
       deleteAccount($database);

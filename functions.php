@@ -8,52 +8,63 @@ function createNavbar()
 function loadCategories($database)
 {
     $results = $database->findAll('categories');
-    echo '<ul>';
+    echo '<ul class="categoryList">';
     foreach ($results as $row) {
         echo '<li><a href=index.php?title=categories&option=' . $row['title'] . '>' . $row['title'] . '</a></li>';
     }
     echo '</ul>';
 }
 
-function listArticles($articles)
+function listArticles($database, $articles)
 {
-    echo '<table>';
     for ($i = count($articles) - 1; $i >= 0; $i--) {
         $article = $articles[$i];
+        $user = $database->find('users', 'user_id', $article['user_id']);
 
-        echo '<tr>';
-        echo '<td><a href="index.php?title=articles&key=' . $article['article_id'] . '">' . $article['title'] . '</a></td>';
-        echo '<td>Author: ' . $article['user_id'] . '</td>';
-        echo '<td>Date: ' . $article['post_date'] . '</td>';
-        echo '</tr>';
+        echo '<div class="articleLink">';
+        echo '<a href="index.php?title=articles&key=' . $article['article_id'] . '">';
+        echo '<div>' . $article['title'] . '</div>';
+        echo '<div>Author: ' . $user['email'] . '</div>';
+        echo '<div>Date: ' . $article['post_date'] . '</div>';
+        echo '</a>';
+        echo '</div>';
     }
-    echo '</table>';
+
 }
 
 function displayArticle($database, $key)
 {
     $article = $database->find('articles', 'article_id', $key);
     $comments = $database->find('comments', 'article_id', $article['article_id'], true);
+    $user = $database->find('users', 'user_id', $article['user_id']);
 
-    echo '<article>';
+//    source: https://stackoverflow.com/questions/6768793/get-the-full-url-in-php, access date: 27.12.2017
+    $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+    echo '<article class="article">';
     echo '<h3>' . $article['title'] . '</h3>';
+    echo '<p>Author: ' . $user['email'] . '</p>';
     echo '<p>' . $article['content'] . '</p>';
-    echo '<h5>Comments: </h5>';
-    echo '<ul>';
+
+    echo '<h4>Share: </h4>';
+    require '../forms/share.php';
+
+    echo '<h4>Comments: </h4>';
 
     if ($comments != null) {
+        echo '<ol>';
         foreach ($comments as $comment) {
             if ($comment['approved'] == 'false') {
                 echo '<li>This comment needs to be approved by the admin.</li>';
             } else {
-                echo '<li>' . $comment['content'] . '</li>';
+                $user = $database->find('users', 'user_id', $comment['user_id']);
+                echo '<li>' . $comment['content'] . ' by ' . $user['email'] . ' on ' . $comment['post_date'] . '</li>';
             }
         }
+        echo '</ol>';
     } else {
-        echo '<li>No comments.</li>';
+        echo '<p>No comments.</p>';
     }
-
-    echo '</ul>';
 
     if (isset($_SESSION['email'])) {
         echo '<form action="index.php?title=articles&key=' . $key . '" method=post>';
@@ -62,7 +73,7 @@ function displayArticle($database, $key)
         echo '<input type="submit" name="comment">';
         echo '</form>';
     } else {
-        echo 'You need to <a href="index.php?title=login">Log-in</a> or You need to <a href="index.php?title=register">create an account</a> to be able to comment';
+        echo '<p>You need to <a href="index.php?title=login">log-in</a> or <a href="index.php?title=register">create an account</a> to be able to comment</p>';
     }
 
     echo '</article>';
@@ -127,7 +138,7 @@ class Database
     }
 
     // query functions
-    // functions are based on the slides provided by Thomas Butler, 2017
+    // functions are provided by Thomas Butler with slight changes made by the author of the project, 2017
     public function find($table, $field, $value, $many = null)
     {
         $stmt = $this->pdo->prepare('SELECT * FROM ' . $table . ' WHERE ' . $field . ' = :value');
@@ -200,9 +211,36 @@ function isLogged()
     }
 }
 
+function login($database)
+{
+    if (isset($_POST['submit'])) {
+        $row = $database->find('users', 'email', $_POST['login']);
+
+        if ($_POST['login'] != $row['email']) {
+            echo '<p>Incorrect email.</p>';
+            return;
+        } else if (!password_verify($_POST['password'], $row['password'])) {
+            echo '<p>Incorrect password.</p>';
+            return;
+        }
+
+        $_SESSION['user_id'] = $row['user_id'];
+        $_SESSION['email'] = $row['email'];
+        if ($row['access_level'] == 'admin') {
+            $_SESSION['logged'] = 'admin';
+            header("Location: index.php?title=admin");
+            exit();
+        } else {
+            $_SESSION['logged'] = 'user';
+            header("Location: index.php?title=home");
+            exit();
+        }
+    }
+}
+
 function logout()
 {
-    if (isset($_SESSION['logged'])) {
+    if (isset($_SESSION['user_id'])) {
         session_destroy();
     }
 
@@ -214,46 +252,68 @@ function register($database)
     $valuesSet = isset($_POST['login'], $_POST['login2'], $_POST['password'], $_POST['password2']);
 
     if ($valuesSet) {
+        $exists = $database->find('users', 'email', $_POST['login']);
         $valuesEqual = $_POST['login'] == $_POST['login2'] && $_POST['password'] == $_POST['password2'];
 
-        if ($valuesEqual) {
-            $newUser = [
-                'email' => $_POST['login'],
-                'password' => password_hash($_POST['password'], PASSWORD_DEFAULT)
-            ];
-
-            $database->insert('users', $newUser);
-            echo "Account has been successfully created";
-        } else {
-            echo "Email or password are not matching";
+        if (count($exists) > 1) {
+            echo '<p>Account has already been created.</p>';
+            return;
+        } else if (!$valuesEqual) {
+            echo "<p>Email or password are not matching.</p>";
+            return;
         }
+
+        $newUser = [
+            'email' => $_POST['login'],
+            'password' => password_hash($_POST['password'], PASSWORD_DEFAULT)
+        ];
+
+        $database->insert('users', $newUser);
+        echo "<p>Account has been successfully created.</p>";
     }
 }
 
 // user profile functions
-function changeEmail()
+function changeEmail($database)
 {
-    if (isset($_POST['email'])) {
-        echo "Email changed successfully";
-        return;
+    echo '<h3>Change email</h3>';
+    if (isset($_POST['email']) && isset($_POST['email2'])) {
+        if ($_POST['email'] == $_POST['email2']) {
+            $user = $database->find('users', 'user_id', $_SESSION['user_id']);
+            $record = [
+                'user_id' => $user['user_id'],
+                'email' => $_POST['email'],
+                'password' => $user['password'],
+                'access_level' => $user['access_level']
+            ];
+            $database->update('users', $record, 'user_id');
+            echo "<p>Email changed successfully</p>";
+        } else {
+            echo '<p>Emails do not match.</p>';
+        }
     }
 
-    echo '<form method="post">';
+    echo '<form action="index.php?title=profile&option=email" method="post">';
     echo '<input type="email" name="email" placeholder="Type in your new email">';
     echo '<input type="email" name="email2" placeholder="Repeat your new email">';
     echo '<input type="submit" name="Change">';
     echo '</form>';
 }
 
-function changePassword()
+function changePassword($database)
 {
-    if (isset($_POST['newPass']) && isset($_POST['newPass'])) {
-        echo "Password changed successfully";
+    echo '<h3>Change password</h3>';
+
+    if (isset($_POST['newPass']) && isset($_POST['newPass2'])) {
+        if ($_POST['newPass'] == $_POST['newPass2']) {
+            echo "Password changed successfully";
+        } else {
+            echo 'Passwords do not match.';
+        }
         return;
     }
 
-    echo '<form method="post">';
-    echo '<input type="password" name="oldPass" placeholder="Type in your old password">';
+    echo '<form action="index.php?title=profile&option=password" method="post">';
     echo '<input type="password" name="newPass" placeholder="Type in your new password">';
     echo '<input type="password" name="newPass2" placeholder="Type in your new password again">';
     echo '<input type="submit" name="Change">';
@@ -262,11 +322,19 @@ function changePassword()
 
 function deleteAccount($database)
 {
+    echo '<h3>Delete account</h3>';
+
     if (isset($_POST['delete'])) {
+        echo '<p>Confirm deletion:</p>';
+        echo '<a href="index.php?title=profile&option=delete&yes">Yes</a>';
+        echo '<a href="index.php?title=profile&option=delete">No</a>';
+        return;
+    }
+
+    if (isset($_GET['yes'])) {
         echo "Account deleted successfully";
         $database->delete('users', 'email', $_SESSION['email']);
         logout();
-        return;
     }
 
     echo '<form method="post"><input type="submit" name="delete" value="Delete account"></form>';
@@ -293,30 +361,45 @@ function addCategory($database)
     }
 }
 
-function editUser($database)
+function editUser($database, $user)
 {
-    if (isset($_GET['key'])) {
-        $user = $database->find('users', 'email', $_GET['key']);
-        $email = $user['email'];
-        $password = $user['password'];
+    if (isset($_POST['email'])) {
+        $record = [
+            'user_id' => $user['user_id'],
+            'email' => $_POST['email'],
+            'password' => $user['password'],
+            'access_level' => $_POST['access_level']
+        ];
+        $database->update('users', $record, 'user_id');
+        header("Location: index.php?title=admin&option=editUser");
     }
 }
 
-function editArticle($database)
+function editArticle($database, $article)
 {
-    if (isset($_GET['key'])) {
-        $article = $database->find('articles', 'article_id', $_GET['key']);
-        $category_id = $article['article_id'];
-        $artTitle = $article['title'];
-        $content = $article['content'];
+    if (isset($_POST['title'])) {
+        $record = [
+            'article_id' => $article['article_id'],
+            'category_id' => $_POST['category_id'],
+            'title' => $_POST['title'],
+            'content' => $_POST['content'],
+            'user_id' => $article['user_id'],
+            'post_date' => $article['post_date']
+        ];
+        $database->update('articles', $record, 'article_id');
+        header("Location: index.php?title=admin&option=editArticle");
     }
 }
 
 function editCategory($database)
 {
-    if (isset($_GET['key'])) {
-        $category = $database->find('categories', 'category_id', $_GET['key']);
-        $catTitle = $category['title'];
+    if (isset($_POST['title'])) {
+        $record = [
+            'category_id' => $_POST['key'],
+            'title' => $_POST['title']
+        ];
+        $database->update('categories', $record, 'category_id');
+        header("Location: index.php?title=admin&option=editCategory");
     }
 }
 

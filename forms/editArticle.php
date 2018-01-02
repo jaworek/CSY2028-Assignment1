@@ -1,3 +1,4 @@
+<h3>Edit article</h3>
 <?php
 $articles = $database->findAll('articles');
 listOptions( $articles, ['article_id', 'title'], 'Edit', 'article_id');
@@ -5,19 +6,7 @@ $categories = $database->findAll('categories');
 
 if (isset($_GET['key'])) {
     $article = $database->find('articles', 'article_id', $_GET['key']);
-}
-
-if (isset($_POST['title'])) {
-    $record = [
-        'article_id' => $article['article_id'],
-        'category_id' => $_POST['category_id'],
-        'title' => $_POST['title'],
-        'content' => $_POST['content'],
-        'user_id' => $article['user_id'],
-        'post_date' => $article['post_date']
-    ];
-    $database->update('articles', $record, 'article_id');
-    header("Location: index.php?title=admin&option=editArticle");
+    editArticle($database, $article);
 }
 
 ob_start();

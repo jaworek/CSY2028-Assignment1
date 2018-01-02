@@ -1,6 +1,6 @@
 <?php
 // if user has logged in, if not they are redirected to login page
-if (!isset($_SESSION['logged'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: index.php?title=login");
 }
 // if user does not have admin rights, they will be redirected to home page
@@ -63,6 +63,10 @@ if ($_SESSION['logged'] != 'admin') {
                 echo "Not a valid option";
                 break;
         }
+    }
+    else {
+      echo '<h3>Admin</h3>';
+      echo '<p>Choose one of the options to make changes in the database.</p>';
     }
     ?>
 

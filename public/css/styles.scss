@@ -1,8 +1,9 @@
 @import url("https://stockfont.org/?69772035349a8e4ece6e05f415d0c8ca31fff37ef65a22d6e1d3704659936440");
 $white: #ffffff;
+$black: #000000;
 $headerBackground: #778baf;
 $navbar: #333333;
-$black: #000000;
+$main: #dddddd;
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -12,6 +13,11 @@ $black: #000000;
 
 body {
     font-family: "Oxygen-Regular", times, verdana, sans-serif;
+
+    display: flex;
+    flex-flow: column;
+
+    min-height: 100vh;
 
     background-color: $white;
 
@@ -41,13 +47,16 @@ header {
 }
 
 .nav {
-    background-color: $navbar;
+    z-index: 1;
 
+    background-color: $navbar;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
     ul {
         display: flex;
         justify-content: center;
 
         list-style-type: none;
+
 
         li {
             width: 150px;
@@ -71,6 +80,8 @@ header {
 
             &:hover ul {
                 max-height: 500px;
+
+                box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
             }
         }
     }
@@ -79,6 +90,7 @@ header {
         display: block;
 
         padding-top: 10px;
+        padding-bottom: 10px;
 
         text-decoration: none;
 
@@ -88,38 +100,21 @@ header {
 
 main {
     display: flex;
+    flex: 1;
     flex-flow: row wrap;
     justify-content: center;
 
-    width: 70vw;
-    min-height: 50vh;
-    margin: auto;
-
     color: #444444;
-    background-color: #dddddd;
+    background-color: $main;
     -webkit-box-shadow: 0 0 10px #888888;
             box-shadow: 0 0 10px #888888;
 
-    section {
-        flex: 4;
-        flex-flow: row wrap;
+    h3 {
+        flex: 1 100%;
 
-        padding-right: 1em;
-        padding-left: 1em;
+        padding: 1em;
 
-         > h3 {
-            flex: 1 100%;
-
-            padding: 1em;
-
-            text-align: center;
-        }
-
-        article {
-            flex: 1 100%;
-
-            padding: 2em;
-        }
+        text-align: center;
     }
 
      > nav {
@@ -132,38 +127,23 @@ main {
         a {
             display: block;
 
+            margin-bottom: 0.5em;
+
             text-decoration: none;
 
             color: $white;
         }
     }
 
-     > article {
+    article {
         flex: 4;
 
-        padding: 2em;
+        padding: 0 2em 2em 2em;
     }
 }
 
-.home {
-    width: 60vw;
-    padding: 5vw;
-}
-
-p, li, h2 {
+p, h2 {
     margin-bottom: 1em;
-}
-
-pre {
-    margin-top: 20px;
-
-    code {
-        display: block;
-    }
-}
-
-code {
-    background-color: #cccccc;
 }
 
 footer {
@@ -186,7 +166,7 @@ form {
         flex: 1 50%;
     }
 
-     > p {
+     > textarea,  > p {
         flex: 2 100%;
     }
 
@@ -194,25 +174,91 @@ form {
         margin-top: 20px;
         padding: 10px;
     }
+}
 
-    input[type="text"], input[type="password"] {
-        color: #999999;
-    }
-
-    input[type="submit"] {
-        font-size: 100px;
-
-        width: 200px;
-        height: 200px;
-    }
+table {
+    width: 100%;
 }
 
 textarea {
     height: 100px;
-
-    color: #999999;
 }
 
-section a {
-    color: #444444;
+// source: https://simplesharebuttons.com/html-share-buttons/ , accessed on: 27.12.2017
+#share-buttons {
+    a {
+        display: inline-block;
+    }
+
+    img {
+        display: inline;
+
+        width: 50px;
+        padding: 5px;
+    }
+}
+
+h3 ~ .categoryList {
+    a {
+        display: block;
+
+        transition: 0.3s;
+        text-decoration: none;
+
+        color: $black;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.article {
+    p:first-of-type {
+        color: red;
+    }
+}
+
+.articleLink {
+    margin-bottom: 0.1em;
+    padding: 0.2em;
+
+    border: 1px solid $black;
+    a {
+        display: block;
+
+        transition: 0.3s;
+        text-decoration: none;
+
+        color: $black;
+
+        div {
+            transition: 0.3s;
+        }
+
+        div:first-of-type {
+            font-weight: 800;
+        }
+
+        &:hover {
+            background-color: darken($main, 10%);
+            div:first-of-type {
+                text-decoration: underline;
+
+                // color: red;
+            }
+        }
+    }
+}
+
+.login {
+    width: 50%;
+    margin: auto;
+}
+
+@media screen and (min-width: 900px) {
+    main {
+        width: 70vw;
+        margin: auto;
+    }
 }

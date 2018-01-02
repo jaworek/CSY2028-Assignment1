@@ -1,20 +1,13 @@
+<h3>Edit category</h3>
 <?php
 $categories = $database->findAll('categories');
 listOptions($categories, ['title'], 'Edit', 'category_id');
 
 if (isset($_GET['key'])) {
     $category = $database->find('categories', 'category_id', $_GET['key']);
-    $catTitle = $category['title'];
 }
 
-if (isset($_POST['title'])) {
-    $record = [
-        'category_id' => $_POST['key'],
-        'title' => $_POST['title']
-    ];
-    $database->update('categories', $record, 'category_id');
-    header("Location: index.php?title=admin&option=editCategory");
-}
+editCategory($database);
 
 ob_start();
 ?>
@@ -23,7 +16,7 @@ ob_start();
         <input type="hidden" name="key" value="<?php echo $_GET['key'] ?>">
         <label for="title">Category:</label>
         <input id="title" type="text" name="title" placeholder="Category title"
-               value="<?php echo $catTitle; ?>">
+               value="<?php echo $category['title']; ?>">
         <input type="submit" name="submit" value="Edit category">
     </form>
 

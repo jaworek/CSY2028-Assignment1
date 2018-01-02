@@ -14,7 +14,8 @@
 		<!-- CSS -->
 		<link rel="stylesheet" href="css/styles.min.css">
 
-		<!-- Script -->
+		<!-- Scripts -->
+        <script src='https://www.google.com/recaptcha/api.js'></script>
 		<script src="js/script.js" charset="utf-8"></script>
 	</head>
 
