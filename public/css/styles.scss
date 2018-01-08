@@ -139,6 +139,14 @@ main {
         flex: 4;
 
         padding: 0 2em 2em 2em;
+
+        ol {
+            border-top: 1px solid $black;
+            border-bottom: 1px solid $black;
+            li {
+                margin: 0.3em;
+            }
+        }
     }
 }
 
@@ -173,6 +181,14 @@ form {
     select, label, input, textarea {
         margin-top: 20px;
         padding: 10px;
+    }
+
+    div {
+        margin-top: 10px;
+
+        div {
+            margin: auto;
+        }
     }
 }
 

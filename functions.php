@@ -1,10 +1,5 @@
 <?php
 
-// navigation bar functions
-function createNavbar()
-{
-}
-
 function loadCategories($database)
 {
     $results = $database->findAll('categories');
@@ -39,7 +34,7 @@ function displayArticle($database, $key)
     $user = $database->find('users', 'user_id', $article['user_id']);
 
 //    source: https://stackoverflow.com/questions/6768793/get-the-full-url-in-php, access date: 27.12.2017
-    $url = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    $url = urlencode("http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
 
     echo '<article class="article">';
     echo '<h3>' . $article['title'] . '</h3>';
@@ -86,13 +81,20 @@ function displayArticle($database, $key)
 function addComment($database, $key)
 {
     if (isset($_POST['comment'])) {
-        $newComment = [
-            'article_id' => $_POST['article_id'],
-            'user_id' => $_SESSION['user_id'],
-            'content' => $_POST['content']
-        ];
-        $database->insert('comments', $newComment);
-        header('Location: index.php?title=articles&key=' . $key);
+        if (strlen($_POST['comment']))
+        {
+            echo '<p>Comment cannot be empty.</p>';
+        }
+        else
+        {
+            $newComment = [
+                'article_id' => $_POST['article_id'],
+                'user_id' => $_SESSION['user_id'],
+                'content' => $_POST['content']
+            ];
+            $database->insert('comments', $newComment);
+            header('Location: index.php?title=articles&key=' . $key);
+        }
     }
 }
 
@@ -211,9 +213,19 @@ function isLogged()
     }
 }
 
+function checkCaptcha()
+{
+    $captchaKey = '6Lca2j4UAAAAAM_Z2SBGht3ZfEGJxbCchw7KGkQL';
+    $checkKey = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret=' . $captchaKey . '&response=' . $_POST['g-recaptcha-response']);
+    $getAnswer = json_decode($checkKey);
+    return $getAnswer->success;
+}
+
 function login($database)
 {
     if (isset($_POST['submit'])) {
+
+
         $row = $database->find('users', 'email', $_POST['login']);
 
         if ($_POST['login'] != $row['email']) {
@@ -221,6 +233,9 @@ function login($database)
             return;
         } else if (!password_verify($_POST['password'], $row['password'])) {
             echo '<p>Incorrect password.</p>';
+            return;
+        } else if (!checkCaptcha()) {
+            echo '<p>Confirm that you are not a robot.</p>';
             return;
         }
 
@@ -249,22 +264,31 @@ function logout()
 
 function register($database)
 {
-    $valuesSet = isset($_POST['login'], $_POST['login2'], $_POST['password'], $_POST['password2']);
+    $valuesSet = isset($_POST['email'], $_POST['email2'], $_POST['password'], $_POST['password2']);
 
     if ($valuesSet) {
-        $exists = $database->find('users', 'email', $_POST['login']);
-        $valuesEqual = $_POST['login'] == $_POST['login2'] && $_POST['password'] == $_POST['password2'];
+        $exists = $database->find('users', 'email', $_POST['email']);
+        $valuesEqual = $_POST['email'] == $_POST['email2'] && $_POST['password'] == $_POST['password2'];
 
-        if (count($exists) > 1) {
+//        email sanitization tutorial: https://www.youtube.com/watch?v=fMJw90n8M60&index=4&list=PLOYHgt8dIdox81dbm1JWXQbm2geG1V2uh, 02.01.2017
+        $sanitizedEmail = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+
+        if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) || $_POST['email'] != $sanitizedEmail) {
+            echo '<p>Entered email is not valid</p>';
+            return;
+        } else if (count($exists) > 1) {
             echo '<p>Account has already been created.</p>';
             return;
         } else if (!$valuesEqual) {
             echo "<p>Email or password are not matching.</p>";
             return;
+        } else if (!checkCaptcha()) {
+            echo '<p>Confirm that you are not a robot.</p>';
+            return;
         }
 
         $newUser = [
-            'email' => $_POST['login'],
+            'email' => $_POST['email'],
             'password' => password_hash($_POST['password'], PASSWORD_DEFAULT)
         ];
 
@@ -344,13 +368,17 @@ function deleteAccount($database)
 function addArticle($database)
 {
     if (isset($_POST['category_id'], $_POST['title'], $_POST['content'])) {
-        $newArticle = [
-            'category_id' => $_POST['category_id'],
-            'title' => $_POST['title'],
-            'content' => $_POST['content'],
-            'user_id' => $_SESSION['user_id']
-        ];
-        $database->insert('articles', $newArticle);
+        if (strlen($_POST['title']) == 0 || strlen($_POST['content']) == 0) {
+            echo '<p>Title or content cannot be empty.</p>';
+        } else {
+            $newArticle = [
+                'category_id' => $_POST['category_id'],
+                'title' => $_POST['title'],
+                'content' => $_POST['content'],
+                'user_id' => $_SESSION['user_id']
+            ];
+            $database->insert('articles', $newArticle);
+        }
     }
 }
 

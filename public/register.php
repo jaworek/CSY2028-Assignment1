@@ -1,14 +1,15 @@
 <article>
   <h3>Register</h3>
 <?php
+isLogged();
 register($database);
 ?>
 
 <form class="login" action="index.php?title=register" method="post">
   <label for="login">Email</label>
-  <input id="login" type="email" name="login" placeholder="user@email.com">
+  <input id="login" type="email" name="email" placeholder="user@email.com">
   <label for="login2">Repeat email</label>
-  <input id="login2" type="email" name="login2" placeholder="user@email.com">
+  <input id="login2" type="email" name="email2" placeholder="user@email.com">
   <label for="password">Password</label>
   <input id="password" type="password" name="password" placeholder="********">
   <label for="password2">Repeat password</label>
